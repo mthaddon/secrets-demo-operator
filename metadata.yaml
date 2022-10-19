@@ -1,0 +1,15 @@
+name: mthaddon-secrets-demo
+ 
+display-name: Secrets Demo Charm
+
+summary: A charm to demo secrets problems.
+
+description: |
+  A charm to demo secrets problems.
+
+assumes:
+  - k8s-api
+
+peers:
+  secrets-charm-peers:
+    interface: secrets-charm-instance
