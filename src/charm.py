@@ -18,6 +18,17 @@ class SecretsCharmCharm(CharmBase):
     def __init__(self, *args):
         super().__init__(*args)
         self.framework.observe(self.on.leader_elected, self._on_leader_elected)
+        self.framework.observe(self.on.config_changed, self._on_config_changed)
+
+    def _on_config_changed(self, _) -> None:
+        peer_relation = self.model.get_relation("secrets-charm-peers")
+        secret_id = peer_relation.data[self.app]["secret-id"]
+        if secret_id:
+            secret = self.model.get_secret(id=secret_id)
+            secret_key = secret.get("secret-key")
+            logging.warning("secret-key set to %s", secret_key)
+        else:
+            logging.error("Unable to get secret-key")
 
     def _on_leader_elected(self, _) -> None:
         peer_relation = self.model.get_relation("secrets-charm-peers")
@@ -29,7 +40,8 @@ class SecretsCharmCharm(CharmBase):
             secret = self.app.add_secret({"secret-key": secret_value})
             peer_relation.data[self.app]["secret-id"] = secret.id
             # XXX: Not currently working, we're not allowed to change permissions here.
-            secret.grant(peer_relation.app, relation=peer_relation)
+            #      Not needed? See https://bugs.launchpad.net/juju/+bug/1993520
+            # secret.grant(peer_relation.app, relation=peer_relation)
 
 
 if __name__ == "__main__":  # pragma: nocover
