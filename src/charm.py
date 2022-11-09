@@ -39,9 +39,6 @@ class SecretsCharmCharm(CharmBase):
             logging.warning("Secret value %s", secret_value)
             secret = self.app.add_secret({"secret-key": secret_value})
             peer_relation.data[self.app]["secret-id"] = secret.id
-            # XXX: Not currently working, we're not allowed to change permissions here.
-            #      Not needed? See https://bugs.launchpad.net/juju/+bug/1993520
-            # secret.grant(peer_relation.app, relation=peer_relation)
 
 
 if __name__ == "__main__":  # pragma: nocover
