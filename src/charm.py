@@ -25,7 +25,7 @@ class SecretsCharmCharm(CharmBase):
         secret_id = peer_relation.data[self.app]["secret-id"]
         if secret_id:
             secret = self.model.get_secret(id=secret_id)
-            secret_key = secret.get("secret-key")
+            secret_key = secret.get_content()["secret-key"]
             logging.warning("secret-key set to %s", secret_key)
         else:
             logging.error("Unable to get secret-key")
