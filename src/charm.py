@@ -46,7 +46,9 @@ class SecretsCharmCharm(CharmBase):
 
     def _on_leader_elected(self, _) -> None:
         peer_relation = self.model.get_relation("secrets-charm-peers")
-        if not peer_relation.data[self.app].get("secret-id"):
+        # Need to check for both 'secret-id' (used if we support secrets) or
+        # 'secret' (used if we don't support secrets).
+        if not peer_relation.data[self.app].get("secret-id") and not peer_relation.data[self.app]["secret"]:
             secret_value = "".join(
                 random.choice(string.ascii_letters + string.digits) for _ in range(32)
             )
